@@ -43,10 +43,11 @@ def downloadFile(url, outputPath, contentType):
             shutil.copyfileobj(r.raw, f)
             print(colored(f"    done.", "green"))
 
-            if filename.endswith(".sol"):
-                currDir = os.path.dirname(outputPath)
-                copyPath = os.path.abspath(os.path.join(currDir, "../Solution/contracts"))
-                shutil.copy(outputPath, os.path.join(copyPath, filename))
+        if filename.endswith(".sol"):
+            currDir = os.path.dirname(outputPath)
+            copyPath = os.path.join(currDir, f"../Solution/hardhat/contracts/{filename}")
+
+            shutil.copy(outputPath, copyPath)
 
     if contentType in handledTypes:
         archiveFilesList.append({
