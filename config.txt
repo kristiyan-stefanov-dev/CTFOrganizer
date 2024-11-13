@@ -1,5 +1,5 @@
 path = I:\CTFS\2024\TEST
-ctfName = 4T$
+ctfName = EKOPARTY
 burp0_url = "https://ctf.4ts.fr:443/api/v1/challenges"
 burp0_cookies = {"session": "SESSION"}
 burp0_headers = {"Pragma": "no-cache", "Cache-Control": "no-cache", "Sec-Ch-Ua-Platform": "\"Windows\"", "Accept-Language": "en-GB,en;q=0.9", "Sec-Ch-Ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"", "Csrf-Token": "664271fc0c8d42bcb1fea8d8ce4ad0b7b6b9577396a2e06121f665dfdfb0c452", "Sec-Ch-Ua-Mobile": "?0", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36", "Accept": "application/json", "Content-Type": "application/json", "Sec-Fetch-Site": "same-origin", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Dest": "empty", "Referer": "https://ctf.4ts.fr/challenges", "Accept-Encoding": "gzip, deflate, br", "Priority": "u=1, i"}

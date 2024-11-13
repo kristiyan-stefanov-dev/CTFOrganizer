@@ -5,6 +5,8 @@ import os
 from datetime import datetime
 from termcolor import colored
 import string
+import wexpect
+import time
 
 os.system('color')
 
@@ -41,6 +43,11 @@ def downloadFile(url, outputPath, contentType):
             shutil.copyfileobj(r.raw, f)
             print(colored(f"    done.", "green"))
 
+            if filename.endswith(".sol"):
+                currDir = os.path.dirname(outputPath)
+                copyPath = os.path.abspath(os.path.join(currDir, "../Solution/contracts"))
+                shutil.copy(outputPath, os.path.join(copyPath, filename))
+
     if contentType in handledTypes:
         archiveFilesList.append({
             "contentType": contentType,
@@ -51,9 +58,10 @@ def createFolder(outputPath):
     if not os.path.exists(outputPath):
         os.makedirs(outputPath)
         print(f"Folder '{outputPath}' created.")
-        return
+        return True
     
     print(colored(f"Folder '{outputPath}' already exists.", "grey"))
+    return False
 
 outputPath = config[0].split(" = ")[1]
 ctfName = config[1].split(" = ")[1]
@@ -92,21 +100,45 @@ for challengeID in challengeIDs:
 
     challengePath = os.path.join(challengePath, challengeName)
     challengeFilesPath = os.path.join(challengePath, "Files")
-    challengeNotesPath = os.path.join(challengePath, "Solution")
+    challengeSolutionPath = os.path.join(challengePath, "Solution")
             
     createFolder(challengePath)
 
     if challengeData["files"]:
         createFolder(challengeFilesPath)
     
-    createFolder(challengeNotesPath)
+    createFolder(challengeSolutionPath)
 
-    with open(os.path.join(challengeNotesPath, "Challenge.md"), "w", encoding="utf-8") as file:
+    with open(os.path.join(challengeSolutionPath, "Challenge.md"), "w", encoding="utf-8") as file:
         file.write(f"# {originalChallengeName} - {originalCategory}\n")
         file.write(f"{description}")
 
-    with open(os.path.join(challengeNotesPath, "Notes.md"), "w", encoding="utf-8") as file:
+    with open(os.path.join(challengeSolutionPath, "Notes.md"), "w", encoding="utf-8") as file:
         file.write("Notes:\n")
+
+    if "blockchain" in category.lower():
+        print(colored(f"Blockchain challenge '{originalChallengeName}' detected.", "red"))
+        print(colored(f"Initializing hardhat setup", "blue"), end=" ")
+        
+        hardhatPath = os.path.join(challengeSolutionPath, "hardhat")
+        if createFolder(hardhatPath):
+            try:
+                
+                child = wexpect.spawn(f'npx hardhat init', cwd=hardhatPath)
+                child.expect('What do you want to do?')
+                child.sendline("0")
+                child.expect('Hardhat project root:')
+                child.sendline("")
+                child.expect('a .gitignore?')
+                child.sendline("y")
+                child.expect('\\?')
+                child.sendline("y")
+                child.expect("dependencies with npm")
+                child.sendline("n")
+
+                print(colored(f"done.", "green"))
+            except Exception as e:
+                print(colored(f"Error initializing hardhat setup: {e}", "red"))
 
     print(colored(f"Challenge '{originalChallengeName}' created.", "green"))
 
